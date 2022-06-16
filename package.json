@@ -1,0 +1,14 @@
+{
+  "name": "validate-bar-code",
+  "version": "1.0.0",
+  "description": "Projeto para validar código de barra e retornar resposta de acordo com a validação",
+  "main": "index.js",
+  "scripts": {
+    "server": "node src/app/index.js"
+  },
+  "author": "@vinricardo",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.1"
+  }
+}
