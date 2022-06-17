@@ -5,7 +5,7 @@ class BarcodeController {
   constructor() {}
   validateBarcode(req, res) {
     let check = service.validateBarcode(req.params.barcode);
-    return res.status(!check.status ? 400 : 200).json(check);
+    return res.status(check.status).json(check);
   }
 }
 
