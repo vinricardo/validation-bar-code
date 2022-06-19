@@ -4,11 +4,16 @@
   "description": "Projeto para validar código de barra e retornar resposta de acordo com a validação",
   "main": "index.js",
   "scripts": {
-    "server": "node src/app/index.js"
+    "server": "node src/app/index.js",
+    "test": "node jasmine.js"
   },
   "author": "@vinricardo",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.18.1"
+    "express": "^4.18.1",
+    "jasmine": "^4.2.1"
+  },
+  "devDependencies": {
+    "jasmine-console-reporter": "^3.1.0"
   }
 }

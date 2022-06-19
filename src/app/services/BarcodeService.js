@@ -25,7 +25,7 @@ class BarcodeService {
      * checkt dv's
      */
     if (isTitleTicket) {
-      if (this.#checkAllDvs(barcode).some((dv) => dv === false)) {
+      if (this.checkAllDvs(barcode).some((dv) => dv === false)) {
         response.message = "Código de barras inválido";
         return response;
       }
@@ -33,7 +33,7 @@ class BarcodeService {
       // After 22.02.2025, set fixed date to 29.05.2022
       let diff =
         new Date(barcode.substring(33, 37) * (1000 * 60 * 60 * 24)).getTime() +
-        new Date(this.#verifyFixedDate()).getTime();
+        new Date(this.verifyFixedDate()).getTime();
 
       let expirationDate = new Date(diff)
         .toISOString()
@@ -47,7 +47,7 @@ class BarcodeService {
 
       response.amount = (parseInt(barcode.substring(37, 48)) / 100).toFixed(2);
     } else {
-      if (this.#checkAllDvsOtherType(barcode).some((dv) => dv === false)) {
+      if (this.checkAllDvsOtherType(barcode).some((dv) => dv === false)) {
         response.message = "Código de barras inválido";
         return response;
       }
@@ -66,7 +66,7 @@ class BarcodeService {
     return response;
   }
 
-  #checkAllDvs(barcode) {
+  checkAllDvs(barcode) {
     var dvsTicket = [false, false, false];
     let interval = [
       { start: 0, end: 9 },
@@ -103,12 +103,12 @@ class BarcodeService {
     return dvsTicket;
   }
 
-  #verifyFixedDate() {
+  verifyFixedDate() {
     let diff = new Date().getTime() - new Date("2025-02-22").getTime();
     return diff < 0 ? "1997-10-07" : "2022-05-29";
   }
 
-  #checkAllDvsOtherType(barcode) {
+  checkAllDvsOtherType(barcode) {
     var dvsCheck = [false, false, false, false];
     let interval = [
       { start: 0, end: 11 },
