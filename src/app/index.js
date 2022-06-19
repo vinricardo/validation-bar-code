@@ -1,9 +1,9 @@
 const express = require("express");
-const BarcodeController = require("./controllers/BarcodeController");
+const BarcodeController = require("./controllers/BarCodeController");
 const app = express();
 
 app.get("/boleto/:barcode", (req, res) =>
   new BarcodeController().validateBarcode(req, res)
 );
 
-app.listen(3000);
+app.listen(80);
