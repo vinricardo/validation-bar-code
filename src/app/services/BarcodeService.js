@@ -17,7 +17,9 @@ class BarcodeService {
      * checkt type of ticket
      */
     const isTitleTicket =
-      barcode[0] !== ARRECADATION_PREFIX_NUMBER ? true : false;
+      barcode[0] !== ARRECADATION_PREFIX_NUMBER && barcode.length == MIN_LENGTH
+        ? true
+        : false;
 
     /**
      * checkt dv's
@@ -44,6 +46,15 @@ class BarcodeService {
       ).toLocaleDateString();
 
       response.amount = (parseInt(barcode.substring(37, 48)) / 100).toFixed(2);
+    } else {
+      if (this.#checkAllDvsOtherType(barcode).some((dv) => dv === false)) {
+        response.message = "Código de barras inválido";
+        return response;
+      }
+      let amount = (
+        parseInt(barcode.substring(4, 11) + barcode.substring(12, 16)) / 100
+      ).toFixed(2);
+      response.amount = amount;
     }
 
     response = {
@@ -95,6 +106,34 @@ class BarcodeService {
   #verifyFixedDate() {
     let diff = new Date().getTime() - new Date("2025-02-22").getTime();
     return diff < 0 ? "1997-10-07" : "2022-05-29";
+  }
+
+  #checkAllDvsOtherType(barcode) {
+    var dvsCheck = [false, false, false, false];
+    let interval = [
+      { start: 0, end: 11 },
+      { start: 12, end: 23 },
+      { start: 24, end: 35 },
+      { start: 36, end: 47 },
+    ];
+    let x = [4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+    interval.forEach(({ start, end }, i) => {
+      let count = 0;
+      barcode
+        .substring(start, end)
+        .split("")
+        .forEach(
+          (number, index) => (count = count + parseInt(number) * x[index])
+        );
+      let diff =
+        count % 11 == 0 || count % 11 == 1
+          ? 0
+          : count % 11 == 10
+          ? 1
+          : 11 - (count % 11);
+      diff == barcode.substring(end, end + 1) ? (dvsCheck[i] = true) : false;
+    });
+    return dvsCheck;
   }
 }
 
