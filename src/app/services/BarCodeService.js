@@ -1,6 +1,7 @@
 const MIN_LENGTH = 47;
 const ARRECADATION_PREFIX_NUMBER = "8";
-class BarcodeService {
+class BarCodeService {
+
   validateBarcode(barcode) {
     let response = { message: "", status: 400 };
     /**
@@ -137,4 +138,4 @@ class BarcodeService {
   }
 }
 
-module.exports = BarcodeService;
+module.exports = BarCodeService;
