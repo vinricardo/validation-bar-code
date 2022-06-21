@@ -1,7 +1,8 @@
+const { refactorDigitableLine } = require("../utils/RefactorDigitableLine");
+
 const MIN_LENGTH = 47;
 const ARRECADATION_PREFIX_NUMBER = "8";
 class BarCodeService {
-
   validateBarcode(barcode) {
     let response = { message: "", status: 400 };
     /**
@@ -74,6 +75,19 @@ class BarCodeService {
       { start: 10, end: 20 },
       { start: 21, end: 31 },
     ];
+    let refactBarCode = refactorDigitableLine(barcode)
+    let arrayBarCode = Array.from(refactBarCode.code);
+    
+    let mainCountDv = 0;
+    let multMainDV = 2;
+    arrayBarCode.reverse().forEach((value) => {
+      mainCountDv = mainCountDv + (multMainDV * value);
+      if (multMainDV == 9) multMainDV = 2;
+      else multMainDV++;
+    });
+    let mainDv = 11 - (mainCountDv % 11);
+    if (mainDv == 0 || mainDv == 10 || mainDv == 11) mainDv = 1;
+    if (mainDv != parseInt(refactBarCode.verificationDigit)) return dvsTicket;
 
     interval.forEach(({ start, end }, i) => {
       var firstField = barcode.substring(start, end);
@@ -117,6 +131,7 @@ class BarCodeService {
       { start: 24, end: 35 },
       { start: 36, end: 47 },
     ];
+
     let x = [4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
     interval.forEach(({ start, end }, i) => {
       let count = 0;
