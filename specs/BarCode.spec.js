@@ -8,7 +8,7 @@ describe("BARCODE", function () {
 
   it("boleto de título válido", function () {
     let checks = service.checkAllDvs(
-      "23792374039090273437641000444905990080000028414"
+      "74891120162085892606402289791077689760000017794"
     );
     expect(checks).toEqual([true, true, true]);
   });

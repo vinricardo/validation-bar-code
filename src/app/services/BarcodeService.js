@@ -1,6 +1,6 @@
 const MIN_LENGTH = 47;
 const ARRECADATION_PREFIX_NUMBER = "8";
-class BarcodeService {
+class BarCodeService {
   validateBarcode(barcode) {
     let response = { message: "", status: 400 };
     /**
@@ -73,6 +73,18 @@ class BarcodeService {
       { start: 10, end: 20 },
       { start: 21, end: 31 },
     ];
+    let arrayBarCode = Array.from(barcode.slice(0, 4) + barcode.slice(5, 44));
+    let mainCountDv = 0;
+    let multMainDV = 1;
+    arrayBarCode.reverse().forEach((value) => {
+      mainCountDv = mainCountDv + multMainDV * value;
+      if (multMainDV == 9) multMainDV = 2;
+      else multMainDV++;
+    });
+
+    let mainDv = 11 - (mainCountDv % 11);
+    if (mainDv == 0 || mainDv == 10 || mainDv == 11) mainDv = 1;
+    if (mainDv != barcode.slice(4, 5)) return dvsTicket;
 
     interval.forEach(({ start, end }, i) => {
       var firstField = barcode.substring(start, end);
@@ -116,6 +128,7 @@ class BarcodeService {
       { start: 24, end: 35 },
       { start: 36, end: 47 },
     ];
+
     let x = [4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
     interval.forEach(({ start, end }, i) => {
       let count = 0;
@@ -137,4 +150,4 @@ class BarcodeService {
   }
 }
 
-module.exports = BarcodeService;
+module.exports = BarCodeService;

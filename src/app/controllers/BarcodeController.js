@@ -1,12 +1,13 @@
-const BarcodeService = require("../services/BarCodeService");
+const BarCodeService = require("../services/BarCodeService");
 
-const service = new BarcodeService();
-class BarcodeController {
+const service = new BarCodeService();
+class BarCodeController {
   constructor() {}
+
   validateBarcode(req, res) {
     let check = service.validateBarcode(req.params.barcode);
     return res.status(check.status).json(check);
   }
 }
 
-module.exports = BarcodeController;
+module.exports = BarCodeController;
