@@ -11,8 +11,10 @@ module.exports.refactorDigitableLine = (code, isBank) => {
         let moreInfosPart = code.substring(30,44);
         let verificationDigit = code.substring(29,30)
         let lastInfosPart = code.substring(4,29)
-        code = code.substring(0,4) + moreInfosPart + lastInfosPart
-        return {code,verificationDigit}
+        let validCode = code.substring(0,4) + moreInfosPart + lastInfosPart
+        code = code.substring(0,4) + verificationDigit + moreInfosPart + lastInfosPart
+        
+        return {code,verificationDigit, validCode}
     } else {
         let verificationDigit = code.substring(3,4)
         return {code,verificationDigit}

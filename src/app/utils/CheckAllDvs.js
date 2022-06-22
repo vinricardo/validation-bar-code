@@ -10,7 +10,7 @@ module.exports.checkAllDvs = (barcode) => {
     
     /** check main DV */
     let refactBarCode = refactorDigitableLine(barcode, true)
-    let arrayBarCode = Array.from(refactBarCode.code);
+    let arrayBarCode = Array.from(refactBarCode.validCode);
 
     let mainCountDv = 0;
     let multMainDV = 2;
