@@ -1,3 +1,5 @@
+const { checkAllDvs } = require("../utils/CheckAllDvs");
+const { checkAllDvsOtherType } = require("../utils/CheckAllDvsOtherType");
 const { refactorDigitableLine } = require("../utils/RefactorDigitableLine");
 
 const MIN_LENGTH = 47;
@@ -27,7 +29,7 @@ class BarCodeService {
      * checkt dv's
      */
     if (isTitleTicket) {
-      if (this.checkAllDvs(barcode).some((dv) => dv === false)) {
+      if (checkAllDvs(barcode).some((dv) => dv === false)) {
         response.message = "Código de barras inválido";
         return response;
       }
@@ -48,8 +50,9 @@ class BarCodeService {
       ).toLocaleDateString();
 
       response.amount = (parseInt(barcode.substring(37, 48)) / 100).toFixed(2);
+      response.barCode = refactorDigitableLine(barcode,true).code
     } else {
-      if (this.checkAllDvsOtherType(barcode).some((dv) => dv === false)) {
+      if (checkAllDvsOtherType(barcode).some((dv) => dv === false)) {
         response.message = "Código de barras inválido";
         return response;
       }
@@ -57,65 +60,15 @@ class BarCodeService {
         parseInt(barcode.substring(4, 11) + barcode.substring(12, 16)) / 100
       ).toFixed(2);
       response.amount = amount;
+      response.barCode = refactorDigitableLine(barcode,false).code
     }
 
     response = {
       ...response,
-      barCode: barcode,
       message: "Código de barras validado com sucesso",
       status: 200,
     };
     return response;
-  }
-
-  checkAllDvs(barcode) {
-    var dvsTicket = [false, false, false];
-    let interval = [
-      { start: 0, end: 9 },
-      { start: 10, end: 20 },
-      { start: 21, end: 31 },
-    ];
-    let refactBarCode = refactorDigitableLine(barcode)
-    let arrayBarCode = Array.from(refactBarCode.code);
-    
-    let mainCountDv = 0;
-    let multMainDV = 2;
-    arrayBarCode.reverse().forEach((value) => {
-      mainCountDv = mainCountDv + (multMainDV * value);
-      if (multMainDV == 9) multMainDV = 2;
-      else multMainDV++;
-    });
-    let mainDv = 11 - (mainCountDv % 11);
-    if (mainDv == 0 || mainDv == 10 || mainDv == 11) mainDv = 1;
-    if (mainDv != parseInt(refactBarCode.verificationDigit)) return dvsTicket;
-
-    interval.forEach(({ start, end }, i) => {
-      var firstField = barcode.substring(start, end);
-      let count = 0;
-      firstField.split("").forEach((element, index) => {
-        if (i == 0) {
-          if (index % 2 == 0) {
-            let el = String(parseInt(element) * 2);
-            el.length < 2
-              ? (count = count + parseInt(el))
-              : (count = count + parseInt(el[0]) + parseInt(el[1]));
-          } else count = count + parseInt(element);
-        } else {
-          if (index % 2 != 0) {
-            let el = String(parseInt(element) * 2);
-            el.length < 2
-              ? (count = count + parseInt(el))
-              : (count = count + parseInt(el[0]) + parseInt(el[1]));
-          } else count = count + parseInt(element);
-        }
-      });
-      let firstDigitDvSum = String(count)[0];
-      parseInt(firstDigitDvSum + "0") + 10 - count ==
-      barcode.substring(end, end + 1)
-        ? (dvsTicket[i] = true)
-        : false;
-    });
-    return dvsTicket;
   }
 
   verifyFixedDate() {
@@ -123,34 +76,6 @@ class BarCodeService {
     return diff < 0 ? "1997-10-07" : "2022-05-29";
   }
 
-  checkAllDvsOtherType(barcode) {
-    var dvsCheck = [false, false, false, false];
-    let interval = [
-      { start: 0, end: 11 },
-      { start: 12, end: 23 },
-      { start: 24, end: 35 },
-      { start: 36, end: 47 },
-    ];
-
-    let x = [4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
-    interval.forEach(({ start, end }, i) => {
-      let count = 0;
-      barcode
-        .substring(start, end)
-        .split("")
-        .forEach(
-          (number, index) => (count = count + parseInt(number) * x[index])
-        );
-      let diff =
-        count % 11 == 0 || count % 11 == 1
-          ? 0
-          : count % 11 == 10
-          ? 1
-          : 11 - (count % 11);
-      diff == barcode.substring(end, end + 1) ? (dvsCheck[i] = true) : false;
-    });
-    return dvsCheck;
-  }
 }
 
 module.exports = BarCodeService;
