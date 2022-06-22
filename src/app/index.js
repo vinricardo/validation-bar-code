@@ -6,4 +6,4 @@ app.get("/boleto/:barcode", (req, res) =>
   new BarCodeController().validateBarcode(req, res)
 );
 
-app.listen(8080);
+app.listen(80);
