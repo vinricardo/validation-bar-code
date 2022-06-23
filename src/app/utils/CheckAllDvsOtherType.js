@@ -26,7 +26,6 @@ module.exports.checkAllDvsOtherType = (barcode) => {
   if (mainDv == 0 || mainDv == 10 || mainDv == 11) mainDv = 1;
   if (mainDv != parseInt(refactBarCode.verificationDigit)) {
     goToOtherMainCheck = true;
-    return dvsCheck;
   }
 
   if (goToOtherMainCheck) {
