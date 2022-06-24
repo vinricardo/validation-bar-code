@@ -22,7 +22,7 @@
 
 <p>Para executar os testes construídos, basta usar o comando: </p>
 
-`npm test`
+`npm test-jasmine` ou `npm test-jest`
 
 ## Dockerizando a aplicação
 
